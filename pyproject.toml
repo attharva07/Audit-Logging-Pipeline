@@ -6,7 +6,7 @@ backend-path = ["."]
 [project]
 name = "auditlog"
 version = "0.1.0"
-description = "Standalone audit logging pipeline scaffold"
+description = "Tamper-evident audit logging pipeline with SQLite"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = []

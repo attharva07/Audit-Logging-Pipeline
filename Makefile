@@ -8,4 +8,4 @@ test:
 	pytest -q
 
 demo:
-	@echo "demo coming in PR4"
+	bash examples/demo.sh
