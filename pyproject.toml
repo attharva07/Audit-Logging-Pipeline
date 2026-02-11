@@ -1,0 +1,18 @@
+[build-system]
+requires = []
+build-backend = "backend"
+backend-path = ["."]
+
+[project]
+name = "auditlog"
+version = "0.1.0"
+description = "Standalone audit logging pipeline scaffold"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.scripts]
+auditlog = "auditlog.cli:app"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
