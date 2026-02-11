@@ -10,18 +10,18 @@ from rich.table import Table
 
 from auditlog.service import AuditLogger
 
-app = typer.Typer(help="Audit logging pipeline CLI.")
+app = typer.Typer(help="Append, query, and verify tamper-evident audit logs stored in SQLite.")
 console = Console()
 
 
 @app.command()
 def append(
     db: str = typer.Option(..., "--db", help="Path to SQLite DB file."),
-    actor: str = typer.Option(..., "--actor", help="Actor identifier."),
-    action: str = typer.Option(..., "--action", help="Action name."),
-    target: str = typer.Option(..., "--target", help="Target identifier."),
-    result: str = typer.Option(..., "--result", help="Result status."),
-    context: str = typer.Option(..., "--context", help="JSON object string for context."),
+    actor: str = typer.Option(..., "--actor", help="Actor identifier (user/service)."),
+    action: str = typer.Option(..., "--action", help="Action name (e.g. login, export)."),
+    target: str = typer.Option(..., "--target", help="Target resource identifier."),
+    result: str = typer.Option(..., "--result", help="Result status (e.g. ok, denied)."),
+    context: str = typer.Option(..., "--context", help="JSON object string for context fields."),
 ) -> None:
     """Append one event to the audit log."""
     try:
@@ -48,7 +48,7 @@ def query_cmd(
     db: str = typer.Option(..., "--db", help="Path to SQLite DB file."),
     actor: str | None = typer.Option(None, "--actor", help="Filter by actor."),
     action: str | None = typer.Option(None, "--action", help="Filter by action."),
-    limit: int = typer.Option(20, "--limit", min=1, help="Max rows to return."),
+    limit: int = typer.Option(20, "--limit", min=1, help="Maximum rows to return."),
 ) -> None:
     """Query audit events."""
     logger = AuditLogger(db)
@@ -85,7 +85,7 @@ def query_cmd(
 def verify(
     db: str = typer.Option(..., "--db", help="Path to SQLite DB file."),
 ) -> None:
-    """Verify hash chain integrity."""
+    """Verify hash-chain integrity; exits 1 when tampering is detected."""
     logger = AuditLogger(db)
     issues = logger.verify_chain()
 
@@ -96,7 +96,7 @@ def verify(
     console.print("FAIL")
     for issue in issues:
         console.print(f"- {issue}")
-    raise typer.Exit(code=1)
+    raise typer.Exit(1)
 
 
 if __name__ == "__main__":
